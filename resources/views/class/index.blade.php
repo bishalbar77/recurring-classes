@@ -173,7 +173,6 @@
                                 <th>Day</th>
                                 <th>Start Time</th>
                                 <th>End Time</th>
-                                <th>Created Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -187,7 +186,6 @@
                                 <td>{{ strftime("%a",strtotime($classes->startDate)) }}</td>
                                 <td>{{ strftime("%H:%M",strtotime($classes->startDate)) }}</td>
                                 <td>{{ strftime("%H:%M",strtotime($classes->endDate)) }}</td>
-                                <td>{{ strftime("%d %b %Y",strtotime($classes->startDate)) }}</td>
                                 <td>
                                   @foreach ($classStudents as $classStudent)
                                       @if($classStudent->class_id == $classes->id)
