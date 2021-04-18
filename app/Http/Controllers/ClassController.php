@@ -59,19 +59,18 @@ class ClassController extends Controller
             $students = $request->students;
             $startDate = Carbon::createFromFormat('m/d/Y g:i A', $request->startDate)->format('Y-m-d H:i:s');
             $endDate = Carbon::createFromFormat('m/d/Y g:i A', $request->endEnd)->format('Y-m-d H:i:s');
-            $classCheck = DB::table('classes')
-                ->whereBetween('startDate',array($startDate,$endDate))
-                ->orWhereBetween('endDate',array($startDate,$endDate))
-                ->get();
+            $classCheck = Classes::all();
             $condition = 0;
             foreach($classCheck as $check) {
-                if((strftime("%a",strtotime($check->startDate)) == strftime("%a",strtotime($startDate))) || (strftime("%a",strtotime($check->startDate)) == strftime("%a",strtotime($endDate)))) {
-                    $studentLists = ClassesStudents::where('class_id',$check->id)->get();
-                    foreach($studentLists as $studentList) {
-                        foreach($students as $student) {
-                            if($studentList->student_id == $student) {
-                                $condition = 1;
-                                $error = $studentList->student->name . ' already has a class on ' . strftime("%H:%M",strtotime($startDate));
+                if((strftime("%H:%M",strtotime($check->startDate)) < strftime("%H:%M",strtotime($startDate))) || (strftime("%H:%M",strtotime($check->endDate)) > strftime("%H:%M",strtotime($endDate)))) {
+                    if((strftime("%a",strtotime($check->startDate)) == strftime("%a",strtotime($startDate))) || (strftime("%a",strtotime($check->endDate)) == strftime("%a",strtotime($endDate)))) {
+                        $studentLists = ClassesStudents::where('class_id',$check->id)->get();
+                        foreach($studentLists as $studentList) {
+                            foreach($students as $student) {
+                                if($studentList->student_id == $student) {
+                                    $condition = 1;
+                                    $error = $studentList->student->name . ' already has a class on ' . strftime("%H:%M",strtotime($startDate));
+                                }
                             }
                         }
                     }
